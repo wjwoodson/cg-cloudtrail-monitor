@@ -1,5 +1,12 @@
+#!/bin/bash
 
 set -e 
+
+if [[ -z $ci_env ]]
+then
+  echo "Please set ENV \$ci_env"
+  exit 99
+fi
 
 #the types of events we need to lookup
 lookupEvents=(
@@ -26,7 +33,8 @@ for name in ${lookupEvents[@]}
 do
   logs=$(
     aws cloudtrail lookup-events --start-time $start_ts --end-time $current_ts \
-    --lookup-attributes AttributeKey=EventName,AttributeValue=$name
+    --lookup-attributes AttributeKey=EventName,AttributeValue=$name \
+    --profile=$ci_env
   )
   echo $logs | jq ' .Events[] | .EventName + " " + .Username + " " '
 done
