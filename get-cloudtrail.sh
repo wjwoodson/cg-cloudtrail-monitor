@@ -33,10 +33,15 @@ for name in ${lookupEvents[@]}
 do
   logs=$(
     aws cloudtrail lookup-events --start-time $start_ts --end-time $current_ts \
-    --lookup-attributes AttributeKey=EventName,AttributeValue=$name \
-    --profile=$ci_env
+      --lookup-attributes AttributeKey=EventName,AttributeValue=$name \
+      --profile=$ci_env
   )
-  echo $logs | jq ' .Events[] | .EventName + " " + .Username + " " '
+  if [[ -n $1 && $1 =~ (-v|--verbose)$ ]]
+  then
+    echo $logs | jq ' .Events[] '
+  else
+    echo $logs | jq ' .Events[] | .EventName + " " + .Username + " " '
+  fi
 done
 
 echo "Done looking up events"
