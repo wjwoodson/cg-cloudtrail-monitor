@@ -31,6 +31,7 @@ start_ts=$(($current_ts - 172800))
 
 for name in ${lookupEvents[@]}
 do
+  echo "======== ======== ${name} ======== ========"
   logs=$(
     aws cloudtrail lookup-events --start-time $start_ts --end-time $current_ts \
       --lookup-attributes AttributeKey=EventName,AttributeValue=$name \
@@ -38,9 +39,12 @@ do
   )
   if [[ -n $1 && $1 =~ (-v|--verbose)$ ]]
   then
-    echo $logs | jq ' .Events[] '
+    echo $logs | jq -r ' .Events[] | (.EventTime | todate) + " " + .EventName + " " + .Username + " " + 
+    (.CloudTrailEvent|fromjson| .sourceIPAddress + " " + .userAgent) + " \n" +
+    .CloudTrailEvent + " \n"'
   else
-    echo $logs | jq ' .Events[] | .EventName + " " + .Username + " " '
+    echo $logs | jq -r ' .Events[] | (.EventTime | todate) + " " + .EventName + " " + .Username + " " + 
+    (.CloudTrailEvent|fromjson| .sourceIPAddress + " " + .userAgent)'
   fi
 done
 
