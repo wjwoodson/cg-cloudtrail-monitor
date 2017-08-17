@@ -41,18 +41,17 @@ fi
 
 #the types of events we need to lookup
 lookupEvents=(
-  "AuthorizeSecurityGroupEgress"
-  "AuthorizeSecurityGroupIngress"
-  "ConsoleLogin"
-  "CreatePolicy"
-  "CreateSecurityGroup"
-  "DeleteTrail"
-  "ModifyVpcAttribute"
-  "PutUserPolicy"
-  "PutRolePolicy"
-  "RevokeSecurityGroupEgress"
-  "RevokeSecurityGroupIngress"
-  "UpdateTrail"
+	"DeleteTrail"
+	"UpdateTrail"
+	"ModifyVpcAttribute"
+	"PutUserPolicy"
+	"PutRolePolicy"
+	"RevokeSecurityGroupEgress"
+	"RevokeSecurityGroupIngress"
+	"AuthorizeSecurityGroupEgress"
+	"AuthorizeSecurityGroupIngress"
+	"CreatePolicy"
+	"CreateSecurityGroup"
 )
 
 #display cloudtrail events for each EventName
