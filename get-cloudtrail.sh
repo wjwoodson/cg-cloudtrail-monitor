@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e 
+set -e
 
 if [[ -n $1 && $1 =~ (-h|--help)$ ]]
 then
@@ -10,21 +10,14 @@ then
   Get cloudtrail events listed in https://cloud.gov/docs/ops/maintenance-list/#review-aws-cloudtrail-events
 
   --help, -h        show this message
-  
-  --days, -d        number of days (now - days) to get events                    
+
+  --days, -d        number of days (now - days) to get events
   "
   exit
 fi
 
-#use AWS_PROFILE if it is set
-profile="default"
-if [[ ! -z $AWS_PROFILE ]]
-then
-  profile=$AWS_PROFILE
-fi
-
 echo "======== ======== get-cloudtrail.sh ======== ========"
-echo "Getting events using profile: ${PROFILE}"
+echo "Getting events"
 
 # end event window at now
 end_ts=$(date +%s)
@@ -60,10 +53,9 @@ do
   echo "======== ======== ${name} ======== ========"
   logs=$(
     aws cloudtrail lookup-events --start-time $start_ts --end-time $end_ts \
-      --lookup-attributes AttributeKey=EventName,AttributeValue=$name \
-      --profile $profile
+      --lookup-attributes AttributeKey=EventName,AttributeValue=$name
   )
-  echo $logs | jq -r ' .Events[] | (.EventTime | todate) + " " + .EventName + " " + .Username + " " + 
+  echo $logs | jq -r ' .Events[] | (.EventTime | todate) + " " + .EventName + " " + .Username + " " +
   (.CloudTrailEvent|fromjson| .sourceIPAddress + " " + .userAgent)'
 done
 
